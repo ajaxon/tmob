@@ -44,8 +44,45 @@ Please provide a short code review of the base `master` branch:
 
 #### Task 1-A
 1. What is done well?
+
+    App is focusing on the UI and with no HttpClient or state management framework referenced inside. Decoupling from data access layer makes switching out  state management easier. I have not been doing this myself and was unaware until reading about the monorepo blueprint.
+    Naming conventions done well.
+    Good use of ngrx
+    
+    
+  
 2. What would you change?
+
+    Would add strict: true for compiler options on tsconfig file.
+    Would break out the routing from the app.module.ts. I prefer to have separate routing module
+    Make the chart configurable from ui - type of chart, options to display , etc
+    Selector is choosing which data is provided to our chart - needs to configurable from ui based on data returned by api so chart is more interactive
+    Add styling and responsiveness -- maybe make chart more responsive - need padding and margins
+    Add "angularCompilerOptions": {
+      "fullTemplateTypeCheck": true,
+    } inside tsconfig
+        
+
 3. Are there any code smells or problematic implementations?
+
+  Tests are failing.
+
+  Chart Component:
+
+        1.In Chart Component observable is being subscribed but never unsubscribed ->     this.data$.subscribe(newData => (this.chartData = newData));
+        Either use async pipe or manually set reference to subscription so we can unsubscribe in onDestroy else it is a memory leak.
+        Also don't see the purpose of subscribing just to set to component state property "charData" just to trigger rerender -- remove chartData and change detection strategy to OnPush.
+        Might be best to not have component receive observable as input but use async in parent when passing in.
+        2. chart should not be set inside the component - move it out and let it be a component property so component is more reusable
+        3. ChangeDetectorRef is not being used
+        4. Change   @Input() data$: Observable<any>; to use typed object and not use any - never use any 
+        5. In html chart is only being rendered if data exists but is an observable being subcribed to in component - move to async pipe 
+
+    Stocks Component:
+
+        1. Add error handling on form input for frontend and if errors from api - missing time error display
+        2. pass data as async pipe to child
+
 
 > Make a PR to fix at least one of the issues that you identify
 
