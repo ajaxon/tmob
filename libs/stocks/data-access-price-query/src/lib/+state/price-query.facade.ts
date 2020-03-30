@@ -3,7 +3,7 @@ import { select, Store } from '@ngrx/store';
 import { FetchPriceQuery } from './price-query.actions';
 import { PriceQueryPartialState } from './price-query.reducer';
 import { getSelectedSymbol, getAllPriceQueries } from './price-query.selectors';
-import { map, skip } from 'rxjs/operators';
+import { map, skip , tap} from 'rxjs/operators';
 
 @Injectable()
 export class PriceQueryFacade {
@@ -11,6 +11,7 @@ export class PriceQueryFacade {
   priceQueries$ = this.store.pipe(
     select(getAllPriceQueries),
     skip(1),
+    tap(val => console.log(val)),
     map(priceQueries =>
       priceQueries.map(priceQuery => [priceQuery.date, priceQuery.close])
     )
