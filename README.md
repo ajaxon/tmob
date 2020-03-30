@@ -61,6 +61,8 @@ Please provide a short code review of the base `master` branch:
     Add "angularCompilerOptions": {
       "fullTemplateTypeCheck": true,
     } inside tsconfig
+
+    Add /coverage to .gitignore
         
 
 3. Are there any code smells or problematic implementations?
